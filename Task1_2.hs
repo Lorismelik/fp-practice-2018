@@ -1,7 +1,6 @@
 module Task1_2 where
 import Todo(todo)
 import Prelude hiding (sin, cos, gcd, round)
-import Data.Fixed
 
 -- синус числа (формула Тейлора)
 sin :: Double -> Double
@@ -14,7 +13,7 @@ sin x = taylorSin roundedX sum i n where
 
 round :: Double -> Double -> Double
 round x y = x - (fromIntegral f) * y where 
-    f = floor ((toRational x) / (toRational y))
+    f = floor (x / y)
 
 taylorSin :: Double -> Double -> Int -> Double -> Double
 taylorSin x sum i n = if (abs n < 1e-8) then sum
@@ -65,7 +64,8 @@ pow x y
     | y < 0  = error "less than zero"
     | y == 0 = 1
     | y == 1 = x
-    | otherwise = last (take (fromIntegral y) (iterate (x*) x))
+    | round (fromIntegral y) 2 == 0 = pow (x * x) (div y 2)
+    | round (fromIntegral y) 2 == 1 = x * pow (x * x) (div (y - 1) 2)
 
 -- является ли данное число простым?
 isPrime :: Integer -> Bool

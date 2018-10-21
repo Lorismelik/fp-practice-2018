@@ -40,7 +40,7 @@ replaceVar varName replacement expression = replace expression
 evaluate :: Term -> Term
 evaluate expression = case expression of
     BinaryTerm operator lhv rhv ->
-        case (operator, lhv, rhv) of 
+        case (operator, evaluate(lhv), evaluate(rhv)) of 
             (Plus, IntConstant lhv, IntConstant rhv) -> IntConstant (lhv + rhv)
             (Minus, IntConstant lhv, IntConstant rhv) -> IntConstant (lhv - rhv)
             (Mult, IntConstant lhv, IntConstant rhv) -> IntConstant (lhv * rhv)
