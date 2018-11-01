@@ -19,31 +19,43 @@ emptyTree = Nil
 contains :: TreeMap v -> Integer -> Bool
 contains t k = case(t) of 
     Nil -> False
-    Node key _ _ _ _| key == k -> True
-    Node key _ l _ _| key > k -> contains l k
-    Node key _ _ r _| key < k -> contains r k
+    Node key val l r s| key == k -> True
+                      | key > k -> contains l k
+                      | key < k -> contains r k
 
 -- Значение для заданного ключа
 lookup :: Integer -> TreeMap v -> v
 lookup k t = case(t) of 
     Nil -> error "Key not found"
-    Node key val _ _ _| key == k -> val
-    Node key _ l _ _| key > k -> lookup k l 
-    Node key _ _ r _| key < k -> lookup k r 
+    Node key val l r s| key == k -> val
+                      | key > k -> lookup k l 
+                      | key < k -> lookup k r 
 
 -- Вставка пары (ключ, значение) в дерево
 insert :: (Integer, v) -> TreeMap v -> TreeMap v
 insert (k, v) t = case(t) of 
     Nil -> Node k v Nil Nil 1
-    Node key _ _ _ _| key == k -> error "Duplicate key"
     Node key val l r s| key > k -> Node key val (insert (k, v) l) r (s + 1)  
-    Node key val l r s| key < k -> Node key val l (insert (k, v) r) (s + 1) 
+                      | key < k -> Node key val l (insert (k, v) r) (s + 1) 
+                      | key == k -> error "Duplicate key"
 
 -- Удаление элемента по ключу
 remove :: Integer -> TreeMap v -> TreeMap v
 remove i t = case(t) of 
     Nil -> error "Key not found"
-
+    Node key val l r s | i < key -> Node key val (remove i l) r (s - 1)
+                       | i > key -> Node key val l (remove i r) (s - 1) 
+                       | otherwise -> case (l, r) of
+                            (Nil, r) -> r
+                            (l, Nil) -> l
+                            (l, r) ->  Node key' val' l' r (s - 1)
+                                where (key', val') = remove' l
+                                      l' = remove key' l
+                                      
+                                      remove' :: TreeMap v -> (Integer, v)
+                                      remove' (Node key'' val'' _ Nil _) = (key'', val'')
+                                      remove' (Node _ _ _ r' _) = remove' r'
+                                          
 
 -- Поиск ближайшего снизу ключа относительно заданного
 nearestLE :: Integer -> TreeMap v -> (Integer, v)
@@ -52,9 +64,9 @@ nearestLE i t = case(t) of
     Node key val l r _ | key == i -> (key, val)
                        | key > i -> nearestLE i l
                        | key < i -> case(r) of
-                          Node k v _ _ _| k == i -> (k, v)
-                          Node k v _ _ _| k < i -> nearestLE i r
-                          otherwise -> (key, val)
+                            Node k v _ _ _| k == i -> (k, v)
+                                          | k < i -> nearestLE i r
+                            otherwise -> (key, val)
 
 -- Построение дерева из списка пар
 treeFromList :: [(Integer, v)] -> TreeMap v
@@ -76,12 +88,11 @@ kMean i t = case (t) of
                    | (sizeOf l) > i ->  kMean i l
                    | (sizeOf l) < i ->  kMean (i - (sizeOf l) - 1) r
     
-
-
 sizeOf :: TreeMap v -> Integer
-sizeOf (Nil) = 0
-sizeOf (Node _ _ _ _ s) = s
+sizeOf x = case(x) of
+    Nil -> 0
+    Node _ _ _ _ s -> s
 
-nums = [(8, 0),(6, 0),(4, 0),(1, 0),(7, 0),(3, 0),(5, 0)]
+nums = [(8, 0),(6, 0),(4, 0),(1, 0),(7, 0),(3, 0),(5, 0), (10, 0), (11, 0), (9, 0)]
 
 tree = treeFromList nums

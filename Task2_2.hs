@@ -64,8 +64,7 @@ elem x lst = foldr (||) False (map (\item -> item == x) lst)
 -- Список чисел в диапазоне [from, to) с шагом step
 rangeTo :: Integer -> Integer -> Integer -> [Integer]
 rangeTo from to step   | to < from = error ":("
-                       | to - from < step = [from]
-                       | otherwise = unfoldr (\ x -> if x + step > to then Nothing else Just(x, x + step)) from
+                       | otherwise = unfoldr (\ x -> if x >= to then Nothing else Just(x, x + step)) from
 
 -- Конкатенация двух списков
 append :: [a] -> [a] -> [a]
