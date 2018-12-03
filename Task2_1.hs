@@ -64,8 +64,11 @@ nearestLE i t = case(t) of
     Node key val l r _ | key == i -> (key, val)
                        | key > i -> nearestLE i l
                        | key < i -> case(r) of
-                            Node k v _ _ _| k == i -> (k, v)
-                                          | k < i -> nearestLE i r
+                            Node k v left _ _ | k == i -> (k, v)
+                                              | k < i -> nearestLE i r
+                                              | k > i -> case (left) of
+                                                    Nil -> (key, val)
+                                                    otherwise -> nearestLE i left
                             otherwise -> (key, val)
 
 -- Построение дерева из списка пар
@@ -93,6 +96,6 @@ sizeOf x = case(x) of
     Nil -> 0
     Node _ _ _ _ s -> s
 
-nums = [(8, 0),(6, 0),(4, 0),(1, 0),(7, 0),(3, 0),(5, 0), (10, 0), (11, 0), (9, 0)]
+nums = [(8, 0),(6, 0),(4, 0),(1, 0),(7, 0),(3, 0),(5, 0), (10, 0), (20, 0), (9, 0)]
 
 tree = treeFromList nums
