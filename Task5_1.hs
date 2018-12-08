@@ -30,10 +30,28 @@ list2dlist' left (h: t) =
     in rec
 
 index :: DList a -> Int -> a
-index = todo
+index dlst i = case (i, dlst) of
+    (0, (DCons _ v _)) -> v
+    (_, (DCons _ _ r)) -> index r (i - 1)
+    otherwise -> error(":(") 
+    
+indexElem :: DList a -> Int -> Dlist a
+index dlst i = case (i, dlst) of
+    (0, (DCons _ v _)) -> dlst
+    (_, (DCons _ _ r)) -> index r (i - 1)
+    otherwise -> error(":(") 
 
 insertAt :: DList a -> Int -> a -> DList a
-insertAt list index value = todo
+insertAt DNil index value = DCons DNil value DNil
+insertAt (DCons _ _ _) index value = insertAt' (indexElem list i) value
+
+insertAt' (DCons l v r) value = 
 
 removeAt :: DList a -> Int -> DList a
 removeAt list index = todo
+
+lst = [4,8,6,7,9]
+
+dlst = list2dlist lst
+
+
