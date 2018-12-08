@@ -39,4 +39,4 @@ instance Monoid (PSetOuter a) where
     mempty = PSetOuter (\x -> False)
 
 instance Functor PSet where
-    fmap f (PSet contains) =  PSet(f . contains)
+    fmap f (PSet contains) =  PSet(\x -> contains (f  x))
