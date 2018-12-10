@@ -35,20 +35,35 @@ index dlst i = case (i, dlst) of
     (_, (DCons _ _ r)) -> index r (i - 1)
     otherwise -> error(":(") 
     
-indexElem :: DList a -> Int -> Dlist a
-index dlst i = case (i, dlst) of
-    (0, (DCons _ v _)) -> dlst
-    (_, (DCons _ _ r)) -> index r (i - 1)
-    otherwise -> error(":(") 
 
 insertAt :: DList a -> Int -> a -> DList a
-insertAt DNil index value = DCons DNil value DNil
-insertAt (DCons _ _ _) index value = insertAt' (indexElem list i) value
+insertAt DNil index value = case (index) of 
+    0 -> DCons DNil value DNil
+    _ -> error(":(")
+insertAt (DCons l v r) index value = case (r , index) of
+    (_, 1) -> let rec = DCons l v (insertAt' rec r value)
+              in rec
+    (_, 0) -> let rec = DCons DNil value (insertAt' rec r v)
+              in rec
+    (DNil, i) | i /= 1 -> error(":(")
+    _ -> DCons l v (insertAt r (index - 1) value)
 
-insertAt' (DCons l v r) value = 
+insertAt' :: DList a -> DList a -> a -> DList a
+insertAt' left right value = case (right) of
+    (DCons l' v' r') -> let rec = DCons left value (insertAt' rec r' v') in rec
+    DNil -> DCons left value DNil
 
 removeAt :: DList a -> Int -> DList a
-removeAt list index = todo
+removeAt DNil index = error(":(")
+removeAt (DCons l v r)  index = case (r , index) of
+    ((DCons l' v' r'), 0) -> case (r') of 
+                                (DCons _ v'' r'') -> let rec = DCons l v' (insertAt' rec r'' v'')
+                                                     in rec
+                                (DNil)            -> DCons l v' DNil               
+    (DNil,             0) -> let rec = DNil
+                             in rec
+    (DNil,             i) | i /= 0 -> error(":(")
+    (_,                i) -> DCons l v (removeAt r (index - 1))                      
 
 lst = [4,8,6,7,9]
 
