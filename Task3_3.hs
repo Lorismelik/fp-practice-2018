@@ -6,7 +6,7 @@ newtype PSet a = PSet{ contains :: (a -> Bool) }
 -- Объясните в комментариях, почему они реализованы именно так
 
 -- Объединение множеств
--- Элемент находится в одном из множеств
+-- Элемент может быть в любом из множеств
 
 newtype PSetUnion a = PSetUnion { containsUnion :: (a -> Bool) }
 
@@ -17,7 +17,7 @@ instance Monoid (PSetUnion  a) where
     mempty = PSetUnion (\x -> False)
 
 -- Пересечение множеств
--- Элемент находится в обоих множествах
+-- Элемент должен быть в обоих множествах
 
 newtype PSetIntersect a = PSetIntersect{ containsIntersect :: (a -> Bool) }
 
@@ -28,7 +28,7 @@ instance Monoid (PSetIntersect a) where
     mempty = PSetIntersect (\x -> False)
 
 -- Разность множеств
--- Элемент находится в одном множестве, но не находится в другом
+-- Элемент должен быть в одном множестве, но отсутствовать в другом
 
 newtype PSetOuter a = PSetOuter{ containsOuter :: (a -> Bool) }
 
@@ -37,6 +37,6 @@ instance Semigroup (PSetOuter a) where
         
 instance Monoid (PSetOuter a) where
     mempty = PSetOuter (\x -> False)
-
+-- Результат False, так как ничего не известно о множестве B
 instance Functor PSet where
-    fmap f (PSet contains) =  PSet(\x -> contains (f  x))
+    fmap f (PSet fa) = PSet (\b -> False)
